@@ -17,6 +17,9 @@ Ren statisk HTML/CSS/JS. Backend: [Supabase](https://supabase.com) (Postgres + a
 
 ## Opsætning
 
+> 📘 Detaljeret trin-for-trin med skærmnavne, fejlfinding og sikkerhedstest:
+> **[docs/SUPABASE-OPSAETNING.md](docs/SUPABASE-OPSAETNING.md)**
+
 ### 1. Opret Supabase-projekt
 
 1. Log ind på supabase.com → **New project**. Vælg en **EU-region**
