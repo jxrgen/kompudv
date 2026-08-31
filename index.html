@@ -7,6 +7,13 @@
   <title>Kompetenceudviklingsapp</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232b6cb0'/%3E%3Cpath d='M28 54l16 16 30-38' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/styles.css" />
+  <script>
+    // Sæt valgt tema før første maling, så siden ikke blinker i det forkerte tema.
+    try {
+      var t = localStorage.getItem("kompudv-theme");
+      if (t) document.documentElement.setAttribute("data-app-theme", t);
+    } catch (e) { /* privat vindue */ }
+  </script>
 </head>
 <body>
   <div id="app" hidden>
@@ -14,9 +21,12 @@
     <!-- ================= LOGIN ================= -->
     <section id="view-auth" class="view">
       <div class="auth-card">
-        <div class="brand">
-          <span class="brand-icon" aria-hidden="true">✓</span>
-          <span class="brand-name">Kompetenceudvikling</span>
+        <div class="card-top">
+          <div class="brand">
+            <span class="brand-icon" aria-hidden="true">✓</span>
+            <span class="brand-name">Kompetenceudvikling</span>
+          </div>
+          <div class="theme-picker" data-theme-picker role="group" aria-label="Vælg tema"></div>
         </div>
         <h1 id="auth-title">Log ind</h1>
         <p class="muted">Civil and Architectural Engineering (CAE) · Aarhus Universitet</p>
@@ -60,6 +70,7 @@
         <button id="app-icon" class="app-icon" title="Kompetenceudvikling" aria-label="App-ikon">✓</button>
         <div class="topbar-title">Kompetenceudvikling</div>
         <div class="topbar-right">
+          <div class="theme-picker" data-theme-picker role="group" aria-label="Vælg tema"></div>
           <span id="who" class="muted"></span>
           <button id="btn-logout" class="btn btn-ghost">Log ud</button>
         </div>
@@ -74,23 +85,24 @@
         <p class="intro">Velkommen til din Kompetenceudviklingsapp</p>
 
         <div class="grid">
-          <div class="panel">
-            <h2>Ny registrering</h2>
+          <div class="panel" id="panel-form">
+            <h2 id="form-heading">Ny registrering</h2>
             <form id="form-competence" novalidate>
+              <label>
+                Dato
+                <input type="date" name="activity_date" required />
+              </label>
               <div class="row-2">
                 <label>
-                  Dato
-                  <input type="date" name="activity_date" required />
+                  Varighed
+                  <input type="number" name="duration_value" min="0" step="0.5" inputmode="decimal" required />
                 </label>
                 <label>
-                  Varighed
-                  <span class="inline">
-                    <input type="number" name="duration_value" min="0" step="0.5" inputmode="decimal" required />
-                    <select name="duration_unit">
-                      <option value="timer">timer</option>
-                      <option value="dage">dage</option>
-                    </select>
-                  </span>
+                  Enhed
+                  <select name="duration_unit">
+                    <option value="timer">timer</option>
+                    <option value="dage">dage</option>
+                  </select>
                 </label>
               </div>
               <label>
@@ -107,7 +119,10 @@
                 <textarea name="title" rows="3" required placeholder="Beskriv aktiviteten…"></textarea>
               </label>
               <p id="competence-error" class="error" role="alert" hidden></p>
-              <button type="submit" class="btn btn-primary">Gem registrering</button>
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="competence-submit">Gem registrering</button>
+                <button type="button" class="btn btn-ghost" id="competence-cancel" hidden>Annullér</button>
+              </div>
             </form>
           </div>
 
@@ -126,7 +141,9 @@
       <header class="topbar topbar-admin">
         <button id="admin-back" class="btn btn-ghost">← Tilbage</button>
         <div class="topbar-title">Admin</div>
-        <div class="topbar-right"></div>
+        <div class="topbar-right">
+          <div class="theme-picker" data-theme-picker role="group" aria-label="Vælg tema"></div>
+        </div>
       </header>
 
       <main class="container">

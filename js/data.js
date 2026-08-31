@@ -20,6 +20,7 @@ export const getMyProfile = impl.getMyProfile;
 
 export const listMyCompetences = impl.listMyCompetences;
 export const addCompetence = impl.addCompetence;
+export const updateCompetence = impl.updateCompetence;
 export const deleteCompetence = impl.deleteCompetence;
 
 export const adminListUsers = impl.adminListUsers;

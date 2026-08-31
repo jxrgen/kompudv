@@ -25,8 +25,13 @@ skrevet færdigt og ligger klar, men er midlertidigt sat på pause efter aftale.
 - `js/local-store.js` — demo-backend på `localStorage`. Første oprettede bruger bliver
   automatisk admin. Password hashes med SHA-256. `kompudvDemoReset()` i konsollen rydder alt.
 - `js/supabase.js` — Supabase-klient + samme API.
-- `js/app.js` — view-styring, auth-flow, opret/list/slet kompetence, 7-klik på app-ikon →
-  password-dialog → admin, CSV-eksport.
+- `js/app.js` — view-styring, auth-flow, opret/**redigér**/list/slet kompetence, 7-klik på
+  app-ikon → password-dialog → admin, CSV-eksport.
+- `js/theme.js` — fem farvetemaer (Lys blå, Mørk blå, Grøn, Bordeaux, Nat) valgt via
+  farveknapper i hjørnet. Huskes i browseren og sættes før første maling, så siden ikke blinker.
+  Uden valg følger appen styresystemets lys/mørk.
+- Demoen er afprøvet af jho og virker. Rettet efter tilbagemelding: talfeltet til varighed var
+  for smalt (dato har nu sin egen række), og registreringer kan nu redigeres.
 - `supabase-schema.sql` — tabeller, RLS, `is_admin()`, signup-trigger.
 - `docs/SUPABASE-OPSAETNING.md` + `docs/supabase-opsaetning.html` — komplet
   opsætningsvejledning i 8 trin. HTML-udgaven har indholdsfortegnelse med scrollspy,
@@ -37,12 +42,11 @@ skrevet færdigt og ligger klar, men er midlertidigt sat på pause efter aftale.
   egen liste, admin via 7 klik + "Superadmin".
 
 ### I gang
-- **Demoen er aldrig kørt i en browser.** Alle filer serveres korrekt (HTTP 200), og
-  koden er gennemgået statisk, men runtime-fejl kan stadig dukke op.
+- Redigering, bredere talfelt og de fem temaer er skrevet, men **ikke afprøvet i browser** —
+  filerne serveres korrekt (HTTP 200) og koden er gennemgået statisk.
 
 ### Næste skridt
-1. Kør demoen: `python -m http.server 5173` i `kompudv`, åbn <http://localhost:5173>,
-   opret en bruger, test registrering + admin + CSV. Meld fejl fra konsollen.
+1. Test de nye ting: redigér en registrering, og prøv de fem temaknapper i hjørnet.
 2. Justér funktionalitet og design ud fra hvad demoen viser.
 3. Når retningen er sat: skift `BACKEND` til `"supabase"` og følg
    `docs/SUPABASE-OPSAETNING.md`.

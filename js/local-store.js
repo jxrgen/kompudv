@@ -162,6 +162,16 @@ export async function addCompetence(entry) {
   return row;
 }
 
+export async function updateCompetence(id, entry) {
+  const db = readDb();
+  // Kun egne rækker — samme begrænsning som RLS håndhæver i Supabase-laget.
+  const row = db.competences.find((c) => c.id === id && c.user_id === db.session);
+  if (!row) throw new Error("Registreringen blev ikke fundet.");
+  Object.assign(row, entry);
+  writeDb(db);
+  return row;
+}
+
 export async function deleteCompetence(id) {
   const db = readDb();
   const before = db.competences.length;

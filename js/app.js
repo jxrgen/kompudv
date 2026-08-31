@@ -3,10 +3,11 @@
 import {
   isConfigured, isDemo,
   signUp, signIn, signOut, getSession, onAuthChange,
-  getMyProfile, listMyCompetences, addCompetence, deleteCompetence,
+  getMyProfile, listMyCompetences, addCompetence, updateCompetence, deleteCompetence,
   adminListUsers, adminListCompetences,
 } from "./data.js";
 import { ADMIN_UNLOCK_PASSWORD } from "./config.js";
+import { initThemePickers } from "./theme.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
 
@@ -33,6 +34,10 @@ const el = {
   competenceError: $("#competence-error"),
   competenceList: $("#competence-list"),
   countBadge: $("#count-badge"),
+  panelForm: $("#panel-form"),
+  formHeading: $("#form-heading"),
+  competenceSubmit: $("#competence-submit"),
+  competenceCancel: $("#competence-cancel"),
   // admin
   adminBack: $("#admin-back"),
   adminUsers: $("#admin-users"),
@@ -48,6 +53,8 @@ const el = {
 let state = {
   profile: null,
   authMode: "login",
+  myRows: [],
+  editingId: null,
   adminSelectedUser: null,
   adminSelectedRows: [],
 };
@@ -135,13 +142,14 @@ function renderCompetences(rows) {
     return;
   }
   el.competenceList.innerHTML = rows.map((r) => `
-    <article class="item" data-id="${r.id}">
+    <article class="item${r.id === state.editingId ? " is-editing" : ""}" data-id="${r.id}">
       <div class="item-top">
         <span class="item-type">${escapeHtml(r.activity_type)}</span>
         <span class="item-meta">${fmtDate(r.activity_date)} · ${formatDuration(r)}</span>
       </div>
       <div class="item-title">${escapeHtml(r.title)}</div>
       <div class="item-actions">
+        <button class="btn btn-ghost btn-small" data-edit="${r.id}">Redigér</button>
         <button class="btn btn-danger" data-delete="${r.id}">Slet</button>
       </div>
     </article>`).join("");
@@ -161,23 +169,71 @@ function escapeHtml(s) {
 
 async function refreshCompetences() {
   try {
-    const rows = await listMyCompetences();
-    renderCompetences(rows);
+    state.myRows = await listMyCompetences();
+    renderCompetences(state.myRows);
   } catch (err) {
     el.competenceList.innerHTML = `<p class="error">Kunne ikke hente registreringer: ${escapeHtml(humanError(err))}</p>`;
   }
 }
 
 el.competenceList.addEventListener("click", async (e) => {
+  const editId = e.target.dataset.edit;
+  if (editId) {
+    startEditing(editId);
+    return;
+  }
+
   const id = e.target.dataset.delete;
   if (!id) return;
   if (!confirm("Slet denne registrering?")) return;
   try {
     await deleteCompetence(id);
+    if (state.editingId === id) stopEditing();
     await refreshCompetences();
   } catch (err) {
     alert("Kunne ikke slette: " + humanError(err));
   }
+});
+
+// ---------- Redigering ------------------------------------------------
+
+function startEditing(id) {
+  const row = state.myRows.find((r) => r.id === id);
+  if (!row) return;
+
+  state.editingId = id;
+  const f = el.formCompetence;
+  f.activity_date.value = row.activity_date;
+  f.duration_value.value = row.duration_value;
+  f.duration_unit.value = row.duration_unit;
+  f.activity_type.value = row.activity_type;
+  f.title.value = row.title;
+
+  el.formHeading.textContent = "Redigér registrering";
+  el.competenceSubmit.textContent = "Gem ændringer";
+  el.competenceCancel.hidden = false;
+  el.panelForm.classList.add("is-editing");
+  el.competenceError.hidden = true;
+
+  renderCompetences(state.myRows);
+  el.panelForm.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  f.title.focus();
+}
+
+function stopEditing() {
+  state.editingId = null;
+  el.formCompetence.reset();
+  setToday();
+  el.formHeading.textContent = "Ny registrering";
+  el.competenceSubmit.textContent = "Gem registrering";
+  el.competenceCancel.hidden = true;
+  el.panelForm.classList.remove("is-editing");
+  el.competenceError.hidden = true;
+}
+
+el.competenceCancel.addEventListener("click", () => {
+  stopEditing();
+  renderCompetences(state.myRows);
 });
 
 el.formCompetence.addEventListener("submit", async (e) => {
@@ -196,12 +252,12 @@ el.formCompetence.addEventListener("submit", async (e) => {
     el.competenceError.hidden = false;
     return;
   }
-  const btn = el.formCompetence.querySelector("button[type=submit]");
+  const btn = el.competenceSubmit;
   btn.disabled = true;
   try {
-    await addCompetence(entry);
-    el.formCompetence.reset();
-    setToday();
+    if (state.editingId) await updateCompetence(state.editingId, entry);
+    else await addCompetence(entry);
+    stopEditing();
     await refreshCompetences();
   } catch (err) {
     el.competenceError.textContent = "Kunne ikke gemme: " + humanError(err);
@@ -353,8 +409,10 @@ async function enterApp(session) {
 
 function leaveApp() {
   state.profile = null;
+  state.myRows = [];
   state.adminSelectedUser = null;
   state.adminSelectedRows = [];
+  stopEditing();
   setAuthMode("login");
   el.formAuth.reset();
   showView("auth");
@@ -362,6 +420,7 @@ function leaveApp() {
 
 async function boot() {
   el.app.hidden = false;
+  initThemePickers();
   setAuthMode("login");
 
   if (isDemo) document.querySelectorAll(".demo-banner").forEach((n) => (n.hidden = false));

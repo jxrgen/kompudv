@@ -80,6 +80,17 @@ export async function addCompetence(entry) {
   return data;
 }
 
+export async function updateCompetence(id, entry) {
+  const { data, error } = await supabase
+    .from("competences")
+    .update(entry)
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+}
+
 export async function deleteCompetence(id) {
   const { error } = await supabase.from("competences").delete().eq("id", id);
   if (error) throw error;

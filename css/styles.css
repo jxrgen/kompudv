@@ -1,7 +1,15 @@
 /* Kompetenceudviklingsapp — enkelt, responsivt design, light/dark */
 
+/* ---------- Temaer ----------
+   Fem valgbare temaer, styret af data-app-theme på <html>.
+   Uden et valg følger appen styresystemets lys/mørk-indstilling. */
+
 :root {
-  color-scheme: light dark;
+  --radius: 12px;
+  --maxw: 1100px;
+
+  /* Standard: Lys blå */
+  color-scheme: light;
   --bg: #f4f6f9;
   --surface: #ffffff;
   --surface-2: #f0f3f7;
@@ -11,13 +19,13 @@
   --primary: #2b6cb0;
   --primary-text: #ffffff;
   --danger: #c0392b;
-  --radius: 12px;
   --shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 8px 24px rgba(16, 24, 40, .06);
-  --maxw: 1100px;
 }
 
+/* Mørkt styresystem — kun når brugeren ikke selv har valgt et tema */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-app-theme]) {
+    color-scheme: dark;
     --bg: #10151b;
     --surface: #1a222c;
     --surface-2: #212b36;
@@ -29,6 +37,76 @@
     --danger: #e57368;
     --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
   }
+}
+
+:root[data-app-theme="lys"] {
+  color-scheme: light;
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #f0f3f7;
+  --border: #d8dee6;
+  --text: #1b2733;
+  --muted: #5c6b7a;
+  --primary: #2b6cb0;
+  --primary-text: #ffffff;
+  --danger: #c0392b;
+  --shadow: 0 1px 3px rgba(16, 24, 40, .08), 0 8px 24px rgba(16, 24, 40, .06);
+}
+
+:root[data-app-theme="moerk"] {
+  color-scheme: dark;
+  --bg: #10151b;
+  --surface: #1a222c;
+  --surface-2: #212b36;
+  --border: #33404d;
+  --text: #e6ebf1;
+  --muted: #9aa9b8;
+  --primary: #4f9ce0;
+  --primary-text: #0a0f14;
+  --danger: #e57368;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .3);
+}
+
+:root[data-app-theme="skov"] {
+  color-scheme: light;
+  --bg: #f1f5f1;
+  --surface: #ffffff;
+  --surface-2: #e8efe8;
+  --border: #cddccd;
+  --text: #17241d;
+  --muted: #55695e;
+  --primary: #2f6b47;
+  --primary-text: #ffffff;
+  --danger: #b23a2c;
+  --shadow: 0 1px 3px rgba(23, 36, 29, .08), 0 8px 24px rgba(23, 36, 29, .07);
+}
+
+:root[data-app-theme="bordeaux"] {
+  color-scheme: light;
+  --bg: #f8f4f4;
+  --surface: #ffffff;
+  --surface-2: #f2e8e9;
+  --border: #e0cdcf;
+  --text: #291a1d;
+  --muted: #6e585c;
+  --primary: #8c2432;
+  --primary-text: #ffffff;
+  --danger: #a8342a;
+  --shadow: 0 1px 3px rgba(41, 26, 29, .08), 0 8px 24px rgba(41, 26, 29, .07);
+}
+
+:root[data-app-theme="nat"] {
+  color-scheme: dark;
+  --bg: #0b0b0d;
+  --surface: #15161a;
+  --surface-2: #1e2025;
+  --border: #33363e;
+  --text: #eae7e1;
+  --muted: #9b968d;
+  --primary: #d99a3c;
+  --primary-text: #17140e;
+  --danger: #e0796a;
+  --shadow: 0 1px 3px rgba(0, 0, 0, .5), 0 8px 24px rgba(0, 0, 0, .4);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -65,6 +143,7 @@ h2 { font-size: 1.1rem; margin-bottom: .75rem; }
 .btn-ghost { background: transparent; border-color: var(--border); color: var(--text); }
 .btn-ghost:hover { background: var(--surface-2); }
 .btn-danger { background: transparent; color: var(--danger); border-color: var(--border); padding: .3rem .6rem; font-size: .85rem; }
+.btn-small { padding: .3rem .6rem; font-size: .85rem; }
 
 .linklike {
   background: none; border: none; color: var(--primary);
@@ -91,12 +170,29 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--primary);
 }
 
-.inline { display: flex; gap: .5rem; margin-top: .3rem; }
-.inline input { margin-top: 0; }
-.inline select { margin-top: 0; width: 7.5rem; flex: none; }
-
 .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 @media (max-width: 560px) { .row-2 { grid-template-columns: 1fr; } }
+
+/* ---------- Temavælger ---------- */
+.theme-picker { display: flex; gap: .3rem; align-items: center; }
+.swatch {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease;
+}
+.swatch:hover { transform: scale(1.18); }
+.swatch[aria-pressed="true"] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--primary);
+}
+.swatch--lys      { background: linear-gradient(135deg, #f4f6f9 50%, #2b6cb0 50%); }
+.swatch--moerk    { background: linear-gradient(135deg, #1a222c 50%, #4f9ce0 50%); }
+.swatch--skov     { background: linear-gradient(135deg, #f1f5f1 50%, #2f6b47 50%); }
+.swatch--bordeaux { background: linear-gradient(135deg, #f8f4f4 50%, #8c2432 50%); }
+.swatch--nat      { background: linear-gradient(135deg, #15161a 50%, #d99a3c 50%); }
 
 /* ---------- Login ---------- */
 .view { min-height: 100%; }
@@ -115,7 +211,11 @@ input:focus, select:focus, textarea:focus {
   width: 100%;
   max-width: 400px;
 }
-.brand { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.25rem; }
+.card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.brand { display: flex; align-items: center; gap: .5rem; }
 .brand-icon {
   display: grid; place-items: center;
   width: 32px; height: 32px; border-radius: 9px;
@@ -187,7 +287,11 @@ input:focus, select:focus, textarea:focus {
 }
 .panel-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .75rem; }
 .panel-head h2 { margin-bottom: 0; }
-.panel form .btn-primary { width: 100%; margin-top: .25rem; }
+.form-actions { display: flex; gap: .5rem; margin-top: .25rem; }
+.form-actions .btn { flex: 1 1 auto; }
+
+/* Panelet markeres, mens en registrering redigeres */
+#panel-form.is-editing { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary), var(--shadow); }
 
 .badge {
   display: inline-block;
@@ -214,7 +318,11 @@ input:focus, select:focus, textarea:focus {
 .item-type { font-weight: 700; font-size: .92rem; }
 .item-meta { color: var(--muted); font-size: .85rem; }
 .item-title { margin-top: .35rem; white-space: pre-wrap; word-break: break-word; }
-.item-actions { margin-top: .5rem; display: flex; justify-content: flex-end; }
+.item-actions { margin-top: .5rem; display: flex; justify-content: flex-end; gap: .4rem; }
+.item.is-editing { border-color: var(--primary); background: var(--surface-2); }
+
+/* Brugernavn skjules på små skærme, så temavælger og Log ud får plads */
+@media (max-width: 620px) { .topbar-right #who { display: none; } }
 
 .user-row {
   display: flex; align-items: center; justify-content: space-between;
