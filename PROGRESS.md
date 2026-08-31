@@ -4,60 +4,62 @@
 
 ## Status pr. 2026-08-31
 
-**Fase:** Første version af app'en er bygget (frontend + DB-skema). Mangler at blive
-koblet til et rigtigt Supabase-projekt og testet i browser.
+**Fase:** App'en er bygget og kører i **demo-tilstand uden server**. Supabase-laget er
+skrevet færdigt og ligger klar, men er midlertidigt sat på pause efter aftale.
 
-### Trufne beslutninger (denne session)
-- **Backend:** Supabase (EU-region) for at komme i gang — kan migreres senere. jho er
-  opmærksom på GDPR og vil skifte løsning på sigt.
+### Trufne beslutninger
+- **CAE = Civil and Architectural Engineering**, Aarhus Universitet. (Var først gættet
+  forkert i `index.html` — rettet.)
+- **To backends bag samme API**, valgt med `BACKEND` i `js/config.js`:
+  - `"local"` — `localStorage`, ingen server. **Nuværende standard, til demo.**
+  - `"supabase"` — Postgres + auth i EU-region med Row Level Security. Klar, men slået fra.
 - **Login:** e-mail + password (ikke "navn + simpelt password" som i første udkast).
-- **Frontend:** ren statisk HTML/CSS/JS, ingen build, ES-moduler. Supabase-klient via
-  jsDelivr-CDN.
+- **Frontend:** ren statisk HTML/CSS/JS, ingen build, ES-moduler.
 - **Admin-eksport:** CSV (semikolon, UTF-8 m/ BOM → dansk Excel).
 
 ### Gjort
-- `index.html` skrevet om fra "Hej verden" til app-skal med tre visninger:
-  login, app, admin.
-- `css/styles.css`: enkelt responsivt design, light/dark, desktop-først med
-  mobiltilpasning.
-- `js/config.js`: placeholders for `SUPABASE_URL`, `SUPABASE_ANON_KEY`,
-  `ADMIN_UNLOCK_PASSWORD = "Superadmin"`.
-- `js/supabase.js`: klient-init + hele dataadgangslaget (auth, profil, kompetencer,
-  admin-opslag) — samlet ét sted, så backend kan udskiftes.
-- `js/app.js`: view-styring, auth-flow, opret/list/slet kompetence, 7-klik på
-  app-ikon → password-dialog → admin, admin-visning af alle brugere + CSV-eksport.
-- `supabase-schema.sql`: tabeller `profiles` + `competences`, RLS-politikker,
-  `is_admin()`-funktion, trigger der opretter profil ved signup.
-- `README.md`: opsætning trin for trin + GDPR-tjekliste.
-- Funktionalitet fra kravene: introtekst "Velkommen til din Kompetenceudviklingsapp",
-  input (dato, varighed timer/dage, aktivitetstype-dropdown med de 4 typer, titel i
-  flere linjer), egen liste, admin via 7 klik + "Superadmin".
+- `index.html` — app-skal med tre visninger: login, app, admin. Demo-markering vises
+  automatisk, når `BACKEND = "local"`.
+- `css/styles.css` — enkelt responsivt design, light/dark, desktop-først.
+- `js/data.js` — backend-vælger. Alt andet importerer herfra.
+- `js/local-store.js` — demo-backend på `localStorage`. Første oprettede bruger bliver
+  automatisk admin. Password hashes med SHA-256. `kompudvDemoReset()` i konsollen rydder alt.
+- `js/supabase.js` — Supabase-klient + samme API.
+- `js/app.js` — view-styring, auth-flow, opret/list/slet kompetence, 7-klik på app-ikon →
+  password-dialog → admin, CSV-eksport.
+- `supabase-schema.sql` — tabeller, RLS, `is_admin()`, signup-trigger.
+- `docs/SUPABASE-OPSAETNING.md` + `docs/supabase-opsaetning.html` — komplet
+  opsætningsvejledning i 8 trin. HTML-udgaven har indholdsfortegnelse med scrollspy,
+  afkrydsning der huskes, kopiér-knap på kodeblokke, tema-skifter og printopsætning.
+- `README.md` — begge backends, demo-vejledning, filoversigt.
+- Kravdækning: introtekst "Velkommen til din Kompetenceudviklingsapp", input (dato,
+  varighed timer/dage, aktivitetstype-dropdown med de 4 typer, titel i flere linjer),
+  egen liste, admin via 7 klik + "Superadmin".
 
 ### I gang
-- Intet aktivt.
+- **Demoen er aldrig kørt i en browser.** Alle filer serveres korrekt (HTTP 200), og
+  koden er gennemgået statisk, men runtime-fejl kan stadig dukke op.
 
 ### Næste skridt
-1. jho opretter Supabase-projekt i EU-region, kører `supabase-schema.sql`, og
-   udfylder `js/config.js` med URL + anon-nøgle.
-2. Test i browser via lokal server (`python -m http.server`) — appen er ikke kørt
-   endnu, så regn med små rettelser.
-3. Opret testbruger, sæt `is_admin = true` (SQL i README), test admin + CSV.
-4. Slå GitHub Pages til (Settings → Pages → main / root).
-5. Derefter: setting-området i admin (endnu udefineret), evt. redigér-funktion,
-   filtrering/sortering af egen liste.
+1. Kør demoen: `python -m http.server 5173` i `kompudv`, åbn <http://localhost:5173>,
+   opret en bruger, test registrering + admin + CSV. Meld fejl fra konsollen.
+2. Justér funktionalitet og design ud fra hvad demoen viser.
+3. Når retningen er sat: skift `BACKEND` til `"supabase"` og følg
+   `docs/SUPABASE-OPSAETNING.md`.
+4. Evt. GitHub Pages (virker fint med demo-backend).
 
 ### Åbne beslutninger / spørgsmål til jho
 - **Aktivitetstyper:** brugt de 4 nævnte (Kursus m/ bevis, Kursus, Praktik, Andet).
   "..." i kravene antyder flere — hvilke?
 - **Varighed:** valgt tal + enhed (timer/dage). OK?
 - **Admin-setting-området:** indhold ikke defineret endnu.
-- **E-mailbekræftelse:** Supabase kræver som standard bekræftelse af e-mail ved
-  signup. Skal det slås fra (nemmere) eller beholdes (sikrere)?
+- **Redigering:** man kan pt. kun oprette og slette, ikke rette en registrering.
 - **GDPR før drift:** databehandleraftale AU–Supabase, EU-dataplacering bekræftet,
   formål/retsgrundlag/opbevaringsperiode, admin-adgang væk fra delt password.
+  Demo-tilstanden må ikke bruges med rigtige personoplysninger.
 
 ### Hvor tingene ligger
 - Arbejdsmappe: `C:\claude\kompetenceudvikling`
 - Repo: `C:\claude\kompetenceudvikling\kompudv` (remote: `https://github.com/jxrgen/kompudv.git`, branch `main`)
 - Config/hooks: `C:\claude\kompetenceudvikling\.claude\settings.json`
-- App-filer: `index.html`, `css/`, `js/`, `supabase-schema.sql`, `README.md`
+- App-filer: `index.html`, `css/`, `js/`, `supabase-schema.sql`, `docs/`, `README.md`

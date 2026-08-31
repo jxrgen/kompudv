@@ -127,6 +127,20 @@ input:focus, select:focus, textarea:focus {
 .auth-card .btn-primary { width: 100%; margin-top: .25rem; }
 .switch { margin-top: 1rem; font-size: .9rem; color: var(--muted); }
 
+/* ---------- Demo-markering ---------- */
+.demo-banner {
+  margin: 1rem 0 0;
+  padding: .6rem .8rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid #c98a1e;
+  border-radius: 8px;
+  background: color-mix(in srgb, #c98a1e 8%, var(--surface));
+  font-size: .85rem;
+  color: var(--muted);
+}
+.demo-banner strong { color: var(--text); }
+.container > .demo-banner { margin: 0 0 1rem; }
+
 /* ---------- Topbar ---------- */
 .topbar {
   display: flex;

@@ -1,11 +1,11 @@
 // Kompetenceudviklingsapp — hovedlogik (view-styring, auth, registreringer, admin).
 
 import {
-  isConfigured, supabase,
+  isConfigured, isDemo,
   signUp, signIn, signOut, getSession, onAuthChange,
   getMyProfile, listMyCompetences, addCompetence, deleteCompetence,
   adminListUsers, adminListCompetences,
-} from "./supabase.js";
+} from "./data.js";
 import { ADMIN_UNLOCK_PASSWORD } from "./config.js";
 
 const $ = (sel, root = document) => root.querySelector(sel);
@@ -364,10 +364,13 @@ async function boot() {
   el.app.hidden = false;
   setAuthMode("login");
 
+  if (isDemo) document.querySelectorAll(".demo-banner").forEach((n) => (n.hidden = false));
+
   if (!isConfigured) {
     showView("auth");
     el.authError.textContent =
-      "Supabase er ikke konfigureret endnu. Udfyld js/config.js med projektets URL og anon-nøgle.";
+      "Supabase er ikke konfigureret endnu. Udfyld js/config.js med projektets URL og anon-nøgle — " +
+      "eller sæt BACKEND = \"local\" for at køre demoen uden server.";
     el.authError.hidden = false;
     el.formAuth.querySelectorAll("input, button").forEach((n) => (n.disabled = true));
     return;
