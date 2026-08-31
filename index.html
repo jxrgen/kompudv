@@ -3,86 +3,158 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kompetenceudvikling — Hello World</title>
-  <style>
-    :root {
-      color-scheme: light dark;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-      background: linear-gradient(135deg, #ffd86f 0%, #fc6076 100%);
-      color: #1a1a2e;
-      text-align: center;
-      padding: 2rem;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(8px);
-      border-radius: 24px;
-      padding: 3rem 2.5rem;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-      max-width: 480px;
-      animation: pop 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-    }
-
-    @keyframes pop {
-      from { opacity: 0; transform: scale(0.8) translateY(20px); }
-      to { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    .wave {
-      font-size: 4rem;
-      display: inline-block;
-      animation: wave 2s ease-in-out infinite;
-      transform-origin: 70% 70%;
-    }
-
-    @keyframes wave {
-      0%, 60%, 100% { transform: rotate(0deg); }
-      10%, 30% { transform: rotate(14deg); }
-      20% { transform: rotate(-8deg); }
-      40% { transform: rotate(-4deg); }
-      50% { transform: rotate(10deg); }
-    }
-
-    h1 {
-      font-size: 2rem;
-      margin: 1rem 0 0.5rem;
-      color: #d6336c;
-    }
-
-    p {
-      font-size: 1.05rem;
-      line-height: 1.6;
-      color: #444;
-    }
-
-    .tag {
-      margin-top: 1.5rem;
-      font-size: 0.85rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #888;
-    }
-  </style>
+  <meta name="color-scheme" content="light dark" />
+  <title>Kompetenceudviklingsapp</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232b6cb0'/%3E%3Cpath d='M28 54l16 16 30-38' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <main class="card">
-    <span class="wave" role="img" aria-label="vinkende hånd">👋</span>
-    <h1>Hej verden!</h1>
-    <p>Velkommen til kompetenceudviklings-appen. Denne side er startskuddet — herfra bygger vi hjemmesiden.</p>
-    <p class="tag">Kompudv · Hello World</p>
-  </main>
+  <div id="app" hidden>
+
+    <!-- ================= LOGIN ================= -->
+    <section id="view-auth" class="view">
+      <div class="auth-card">
+        <div class="brand">
+          <span class="brand-icon" aria-hidden="true">✓</span>
+          <span class="brand-name">Kompetenceudvikling</span>
+        </div>
+        <h1 id="auth-title">Log ind</h1>
+        <p class="muted">Center for Undervisningsudvikling og Digitale Medier (CAE) · Aarhus Universitet</p>
+
+        <form id="form-auth" novalidate>
+          <label id="field-name" hidden>
+            Navn
+            <input type="text" name="fullName" autocomplete="name" />
+          </label>
+          <label>
+            E-mail
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+          <label>
+            Password
+            <input type="password" name="password" autocomplete="current-password" minlength="8" required />
+          </label>
+          <p id="auth-error" class="error" role="alert" hidden></p>
+          <button type="submit" class="btn btn-primary" id="auth-submit">Log ind</button>
+        </form>
+
+        <p class="switch">
+          <span id="switch-to-signup">
+            Ny bruger? <button type="button" class="linklike" data-mode="signup">Opret konto</button>
+          </span>
+          <span id="switch-to-login" hidden>
+            Har du en konto? <button type="button" class="linklike" data-mode="login">Log ind</button>
+          </span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= APP ================= -->
+    <section id="view-main" class="view" hidden>
+      <header class="topbar">
+        <button id="app-icon" class="app-icon" title="Kompetenceudvikling" aria-label="App-ikon">✓</button>
+        <div class="topbar-title">Kompetenceudvikling</div>
+        <div class="topbar-right">
+          <span id="who" class="muted"></span>
+          <button id="btn-logout" class="btn btn-ghost">Log ud</button>
+        </div>
+      </header>
+
+      <main class="container">
+        <p class="intro">Velkommen til din Kompetenceudviklingsapp</p>
+
+        <div class="grid">
+          <div class="panel">
+            <h2>Ny registrering</h2>
+            <form id="form-competence" novalidate>
+              <div class="row-2">
+                <label>
+                  Dato
+                  <input type="date" name="activity_date" required />
+                </label>
+                <label>
+                  Varighed
+                  <span class="inline">
+                    <input type="number" name="duration_value" min="0" step="0.5" inputmode="decimal" required />
+                    <select name="duration_unit">
+                      <option value="timer">timer</option>
+                      <option value="dage">dage</option>
+                    </select>
+                  </span>
+                </label>
+              </div>
+              <label>
+                Aktivitetstype
+                <select name="activity_type" required>
+                  <option value="Kursus m/ bevis">Kursus m/ bevis</option>
+                  <option value="Kursus">Kursus</option>
+                  <option value="Praktik">Praktik</option>
+                  <option value="Andet">Andet</option>
+                </select>
+              </label>
+              <label>
+                Titel
+                <textarea name="title" rows="3" required placeholder="Beskriv aktiviteten…"></textarea>
+              </label>
+              <p id="competence-error" class="error" role="alert" hidden></p>
+              <button type="submit" class="btn btn-primary">Gem registrering</button>
+            </form>
+          </div>
+
+          <div class="panel">
+            <h2>Mine registreringer <span id="count-badge" class="badge">0</span></h2>
+            <div id="competence-list" class="list">
+              <p class="muted">Ingen registreringer endnu.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+    </section>
+
+    <!-- ================= ADMIN ================= -->
+    <section id="view-admin" class="view" hidden>
+      <header class="topbar topbar-admin">
+        <button id="admin-back" class="btn btn-ghost">← Tilbage</button>
+        <div class="topbar-title">Admin</div>
+        <div class="topbar-right"></div>
+      </header>
+
+      <main class="container">
+        <div class="grid">
+          <div class="panel">
+            <h2>Brugere</h2>
+            <div id="admin-users" class="list"><p class="muted">Indlæser…</p></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2 id="admin-detail-title">Vælg en bruger</h2>
+              <button id="admin-export" class="btn btn-primary" hidden>Eksportér CSV</button>
+            </div>
+            <div id="admin-detail" class="list"><p class="muted">—</p></div>
+          </div>
+        </div>
+      </main>
+    </section>
+
+  </div>
+
+  <!-- Admin-oplåsning: dialog efter 7 klik -->
+  <dialog id="admin-dialog">
+    <form method="dialog" id="form-admin-unlock">
+      <h2>Admin-adgang</h2>
+      <label>
+        Password
+        <input type="password" name="password" autocomplete="off" />
+      </label>
+      <p id="admin-unlock-error" class="error" hidden>Forkert password.</p>
+      <menu>
+        <button value="cancel" class="btn btn-ghost">Annullér</button>
+        <button value="ok" class="btn btn-primary" id="admin-unlock-ok">Lås op</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <noscript><p style="padding:2rem">Denne app kræver JavaScript.</p></noscript>
+  <script type="module" src="js/app.js"></script>
 </body>
 </html>
