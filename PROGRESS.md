@@ -4,27 +4,31 @@
 
 ## Status pr. 2026-08-31
 
-**Fase:** Opstart — grundlag lagt.
+**Fase:** Opstart — grundlag lagt. Selve appen er endnu ikke påbegyndt.
 
 ### Gjort
 - GitHub CLI logget ind som `jxrgen` (scopes: gist, read:org, repo).
 - Repo `jxrgen/kompudv` klonet til `C:\claude\kompetenceudvikling\kompudv`.
-- `index.html` oprettet: en glad "Hej verden!"-side (animeret 👋, gradient-baggrund, responsivt, dansk, light/dark). Committet som root-commit `4b9945a` og pushet til `main`.
-- Automatik sat op i `C:\claude\kompetenceudvikling\.claude\settings.json`:
+- `index.html` oprettet: en glad "Hej verden!"-side (animeret 👋, gradient-baggrund, responsivt, dansk, light/dark). Root-commit `4b9945a`, pushet til `main`.
+- `PROGRESS.md` oprettet og pushet (`d6d2d6a`).
+- Automatik i `C:\claude\kompetenceudvikling\.claude\settings.json`:
   - `UserPromptSubmit`-hook: reagerer på ordet "farvel" og minder om at opdatere + pushe denne fil.
   - `SessionStart`-hook: viser denne fil ved start.
+  - NB: `.claude`-mappen er ny, så hookene er først aktive efter jho har åbnet `/hooks` én gang eller genstartet Claude Code. Konventionen er også gemt i Claudes hukommelse som backup.
+- Denne session: mest forklaring af hooks (koncept, `/hooks`-listen, hvordan man opretter/ændrer). Ingen kodeændringer i appen.
 
 ### I gang
-- Intet aktivt lige nu.
+- Intet aktivt.
 
 ### Næste skridt
-- Beslut teknologivalg for appens hjemmeside (ren statisk HTML/CSS/JS, eller et framework?).
-- Beslut hostingform (GitHub Pages?).
-- Udbyg `index.html` fra hello world til den egentlige forside for kompetenceudviklings-appen.
+- Beskriv appens formål og indhold (mangler helt i repoet).
+- Vælg teknologi til hjemmesiden (ren statisk HTML/CSS/JS eller framework?).
+- Vælg hosting (GitHub Pages?).
+- Udbyg `index.html` fra hello world til den egentlige forside.
 
 ### Åbne beslutninger
-- Appens formål/indhold er endnu ikke beskrevet i repoet.
-- Sprog: dansk (antaget ud fra hidtidig dialog).
+- Appens formål/indhold ikke defineret.
+- Sprog: dansk (antaget).
 
 ### Hvor tingene ligger
 - Arbejdsmappe: `C:\claude\kompetenceudvikling`
