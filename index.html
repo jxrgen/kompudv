@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kompetenceudvikling — Hello World</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #ffd86f 0%, #fc6076 100%);
+      color: #1a1a2e;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      border-radius: 24px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+      max-width: 480px;
+      animation: pop 0.6s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    @keyframes pop {
+      from { opacity: 0; transform: scale(0.8) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .wave {
+      font-size: 4rem;
+      display: inline-block;
+      animation: wave 2s ease-in-out infinite;
+      transform-origin: 70% 70%;
+    }
+
+    @keyframes wave {
+      0%, 60%, 100% { transform: rotate(0deg); }
+      10%, 30% { transform: rotate(14deg); }
+      20% { transform: rotate(-8deg); }
+      40% { transform: rotate(-4deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin: 1rem 0 0.5rem;
+      color: #d6336c;
+    }
+
+    p {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .tag {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <span class="wave" role="img" aria-label="vinkende hånd">👋</span>
+    <h1>Hej verden!</h1>
+    <p>Velkommen til kompetenceudviklings-appen. Denne side er startskuddet — herfra bygger vi hjemmesiden.</p>
+    <p class="tag">Kompudv · Hello World</p>
+  </main>
+</body>
+</html>
